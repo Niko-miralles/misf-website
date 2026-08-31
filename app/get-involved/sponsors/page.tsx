@@ -229,7 +229,7 @@ export default function SponsorsPage() {
           </div>
         </div>
 
-        <div className="mt-12 bg-misf-blue px-6 py-8 sm:px-8 lg:flex lg:items-center lg:justify-between lg:gap-8">
+        <div id="sponsor-rmi" className="mt-12 bg-misf-blue px-6 py-8 sm:px-8 lg:flex lg:items-center lg:justify-between lg:gap-8">
           <div>
             <p className="font-display text-xs font-black uppercase tracking-[0.25em] text-misf-gold">
               Become a partner

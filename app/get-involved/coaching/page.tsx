@@ -39,6 +39,24 @@ export default function CoachingPage() {
           </p>
         </div>
 
+        <section id="coach-development" className="mb-14 overflow-hidden bg-misf-blue p-7 sm:p-10">
+          <p className="font-display text-xs font-black uppercase tracking-[0.25em] text-misf-gold">Coach development</p>
+          <div className="mt-4 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+            <div>
+              <h2 className="font-display text-3xl font-black uppercase leading-tight text-white sm:text-4xl">
+                Building a new generation of Marshallese coaches
+              </h2>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
+                Our target is to qualify and support 30 new coaches across on-island communities and the diaspora by 2030. Courses, mentoring, placements, and practical delivery opportunities all contribute to that pathway.
+              </p>
+            </div>
+            <div className="border border-white/20 bg-white/10 p-6 text-center">
+              <p className="font-display text-5xl font-black text-misf-gold">30</p>
+              <p className="mt-2 font-display text-sm font-black uppercase tracking-widest text-white">New coaches by 2030</p>
+            </div>
+          </div>
+        </section>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           {PROGRAMMES.map((prog) => (
             <div key={prog.label} className="flex flex-col">

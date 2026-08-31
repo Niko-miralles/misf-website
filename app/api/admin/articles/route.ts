@@ -8,6 +8,7 @@ import {
   updateAirtableRecord,
 } from '@/lib/airtable'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
+import { rejectCrossSiteWrite } from '@/lib/admin-request'
 import { articles as fallbackArticles } from '@/data/news'
 
 function slugify(value: string) {
@@ -74,6 +75,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const rejected = rejectCrossSiteWrite(request)
+  if (rejected) return rejected
+
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Not authorised' }, { status: 401 })
   }
@@ -99,6 +103,9 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const rejected = rejectCrossSiteWrite(request)
+  if (rejected) return rejected
+
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Not authorised' }, { status: 401 })
   }
@@ -122,6 +129,9 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const rejected = rejectCrossSiteWrite(request)
+  if (rejected) return rejected
+
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Not authorised' }, { status: 401 })
   }

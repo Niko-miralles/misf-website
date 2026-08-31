@@ -47,6 +47,7 @@ const NAV_ITEMS = [
     children: [
       { label: 'About MISF', href: '/about' },
       { label: 'Mission & Strategy', href: '/about/mission' },
+      { label: 'Our Team', href: '/about/team' },
       { label: 'Our Story', href: '/documentary' },
       { label: 'Soccer Development', href: '/about/soccer-development' },
       { label: 'Resource Hub', href: '/about/soccer-development/resources' },

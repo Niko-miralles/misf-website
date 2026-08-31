@@ -5,11 +5,13 @@ const COOKIE_NAME = 'misf_admin_session'
 const SESSION_MAX_AGE = 60 * 60 * 8
 
 function secret() {
-  return process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_PASSWORD || 'local-dev-only-change-me'
+  return process.env.ADMIN_SESSION_SECRET
 }
 
 function sign(value: string) {
-  return createHmac('sha256', secret()).update(value).digest('base64url')
+  const sessionSecret = secret()
+  if (!sessionSecret) throw new Error('ADMIN_SESSION_SECRET is not configured')
+  return createHmac('sha256', sessionSecret).update(value).digest('base64url')
 }
 
 function safeEqual(a: string, b: string) {
@@ -21,7 +23,7 @@ function safeEqual(a: string, b: string) {
 
 export function verifyAdminPassword(password: string) {
   const expected = process.env.ADMIN_PASSWORD
-  if (!expected) return false
+  if (!expected || !secret()) return false
   return safeEqual(password, expected)
 }
 
@@ -49,6 +51,7 @@ export async function clearAdminSession() {
 }
 
 export async function isAdminAuthenticated() {
+  if (!secret()) return false
   const cookieStore = await cookies()
   const token = cookieStore.get(COOKIE_NAME)?.value
   if (!token) return false

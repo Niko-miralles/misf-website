@@ -10,7 +10,7 @@ interface TeamData {
   players: Player[]
 }
 
-export default function TeamsClient({ teams }: { teams: TeamData[] }) {
+export default function TeamsClient({ teams, title = 'Teams' }: { teams: TeamData[]; title?: string }) {
   const [idx, setIdx] = useState(0)
   const groups = groupByPosition(teams[idx].players)
 
@@ -19,11 +19,11 @@ export default function TeamsClient({ teams }: { teams: TeamData[] }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
 
         <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-7xl text-misf-blue-dark leading-none mb-6">
-          Teams
+          {title}
         </h1>
 
         {/* Team tabs */}
-        <div className="flex gap-0 border-b border-gray-200 mb-10">
+        {teams.length > 1 && <div className="flex gap-0 border-b border-gray-200 mb-10">
           {teams.map((t, i) => (
             <button
               key={t.label}
@@ -37,7 +37,7 @@ export default function TeamsClient({ teams }: { teams: TeamData[] }) {
               {t.label}
             </button>
           ))}
-        </div>
+        </div>}
 
         {/* Position groups */}
         {groups.map(({ label, players }) => (

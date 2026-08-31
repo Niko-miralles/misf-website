@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
 import { isAdminAuthenticated } from '@/lib/admin-auth'
+import { rejectCrossSiteWrite } from '@/lib/admin-request'
 
 export async function POST(request: Request) {
+  const rejected = rejectCrossSiteWrite(request)
+  if (rejected) return rejected
+
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Not authorised' }, { status: 401 })
   }
