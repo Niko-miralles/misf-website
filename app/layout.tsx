@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter, Barlow_Condensed } from 'next/font/google'
 import './globals.css'
-import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
-import ScrollToTop from '@/components/ScrollToTop'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
+import AppShell from '@/components/layout/AppShell'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -70,10 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${barlowCondensed.variable}`}>
       <body className="min-h-screen flex flex-col">
         <GoogleAnalytics />
-        <ScrollToTop />
-        <Navbar />
-        <main className="flex-1 pt-16 bg-white">{children}</main>
-        <Footer />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   )
