@@ -1,7 +1,7 @@
 import { createClient } from '@sanity/client'
 import { createReadStream } from 'node:fs'
 import { readdir } from 'node:fs/promises'
-import { basename, join } from 'node:path'
+import { basename, join, relative } from 'node:path'
 import { articles } from '../data/news'
 import { federationStaff } from '../data/federation-staff'
 import { squad, futsalSquad, womensFutsalSquad, technicalStaff } from '../data/players'
@@ -51,6 +51,36 @@ async function uploadRemainingAssets() {
   return files.length
 }
 
+async function listPagePaths(directory: string): Promise<string[]> {
+  const entries = await readdir(directory, { withFileTypes: true })
+  const routes: string[] = []
+  for (const entry of entries) {
+    const fullPath = join(directory, entry.name)
+    if (entry.isDirectory()) {
+      if (['api', 'admin', 'studio'].includes(entry.name) || entry.name.startsWith('[')) continue
+      routes.push(...await listPagePaths(fullPath))
+    } else if (entry.name === 'page.tsx') {
+      const folder = relative(join(process.cwd(), 'app'), directory)
+      routes.push(folder ? `/${folder.replaceAll('\\', '/')}` : '/')
+    }
+  }
+  return routes
+}
+
+function plainText(value: string) {
+  return value.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/\s+/g, ' ').trim()
+}
+
+async function fetchPageSummary(path: string) {
+  const baseUrl = process.env.CMS_SOURCE_URL || 'https://misf-website-psi.vercel.app'
+  const html = await fetch(`${baseUrl}${path}`).then((response) => response.ok ? response.text() : '')
+  const title = plainText(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || '')
+  const heading = plainText(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || title.replace(/\s*\|\s*MISF$/, ''))
+  const description = plainText(html.match(/<meta[^>]+name="description"[^>]+content="([^"]*)"/i)?.[1] || '')
+  const imagePath = html.match(/<img[^>]+src="(\/images\/[^"?]+)[^>]*>/i)?.[1]
+  return { title: heading || path, description, imagePath }
+}
+
 async function run() {
   const remainingAssets = await uploadRemainingAssets()
   const assetIds = new Map(await client.fetch<Array<{ _id: string, originalFilename: string }>>('*[_type == "sanity.imageAsset"]{_id, originalFilename}').then((assets) => assets.map((asset) => [asset.originalFilename, asset._id] as const)))
@@ -81,6 +111,20 @@ async function run() {
       excerpt: article.excerpt,
       body: blocks(article.body),
       image: articleImages.get(article.slug),
+    })
+  }
+
+  for (const path of await listPagePaths(join(process.cwd(), 'app'))) {
+    const page = await fetchPageSummary(path)
+    tx.createOrReplace({
+      _id: `page-${path === '/' ? 'home' : path.slice(1).replaceAll('/', '-')}`,
+      _type: 'page',
+      title: page.title,
+      slug: { _type: 'slug', current: path === '/' ? 'home' : path.slice(1) },
+      heroTitle: page.title,
+      heroImage: imageReference(page.imagePath || null),
+      content: blocks(page.description),
+      seo: { metaTitle: page.title, metaDescription: page.description },
     })
   }
 
