@@ -1,3 +1,8 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+
 interface PageHeaderProps {
   eyebrow?: string
   title: string
@@ -17,10 +22,30 @@ export default function PageHeader({
   imagePosition = 'center',
   tall = false,
 }: PageHeaderProps) {
+  const pathname = usePathname()
+  const [cmsPage, setCmsPage] = useState<{
+    heroTitle?: string
+    heroImage?: string
+    content?: string
+  } | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    fetch(`/api/cms/page?path=${encodeURIComponent(pathname || '/')}`)
+      .then((response) => response.ok ? response.json() : null)
+      .then((page) => { if (!cancelled) setCmsPage(page) })
+      .catch(() => { if (!cancelled) setCmsPage(null) })
+    return () => { cancelled = true }
+  }, [pathname])
+
+  const displayTitle = cmsPage?.heroTitle || title
+  const displayImage = cmsPage?.heroImage || image
+  const displaySubtitle = cmsPage?.content || subtitle
+
   return (
     <div
-      className={`relative ${tall ? 'py-32 sm:py-48' : 'py-16 sm:py-20'} px-4 ${!image ? `bg-gradient-to-br ${gradient}` : ''}`}
-      style={image ? { backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: imagePosition } : undefined}
+      className={`relative ${tall ? 'py-32 sm:py-48' : 'py-16 sm:py-20'} px-4 ${!displayImage ? `bg-gradient-to-br ${gradient}` : ''}`}
+      style={displayImage ? { backgroundImage: `url(${displayImage})`, backgroundSize: 'cover', backgroundPosition: imagePosition } : undefined}
     >
       <div className="absolute inset-0 bg-[#0E2D7A]/60" />
       <div className="relative max-w-7xl mx-auto">
@@ -30,10 +55,10 @@ export default function PageHeader({
           </p>
         )}
         <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl uppercase text-white leading-none">
-          {title}
+          {displayTitle}
         </h1>
-        {subtitle && (
-          <p className="mt-4 text-white/70 text-base sm:text-lg max-w-2xl">{subtitle}</p>
+        {displaySubtitle && (
+          <p className="mt-4 text-white/70 text-base sm:text-lg max-w-2xl">{displaySubtitle}</p>
         )}
       </div>
     </div>

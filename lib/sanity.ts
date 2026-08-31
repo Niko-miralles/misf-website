@@ -46,6 +46,32 @@ export async function getSanityArticle(slug: string) {
   return article ? toArticle(article) : null
 }
 
+export type CmsPage = {
+  title?: string
+  heroTitle?: string
+  heroImage?: string
+  content?: string
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+  }
+}
+
+export async function getSanityPage(path: string) {
+  const slug = path === '/' ? 'home' : path.replace(/^\/+|\/+$/g, '')
+  return sanityClient.fetch<CmsPage | null>(
+    `*[_type == "page" && slug.current == $slug][0] {
+      title,
+      heroTitle,
+      "heroImage": heroImage.asset->url,
+      "content": pt::text(content),
+      seo
+    }`,
+    { slug },
+    { next: { revalidate: 60 } },
+  )
+}
+
 export type CmsStaffMember = {
   _id: string
   name: string
