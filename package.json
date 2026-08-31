@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sanity:import": "tsx scripts/import-sanity.ts"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",

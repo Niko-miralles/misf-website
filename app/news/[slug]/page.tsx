@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { articles } from '@/data/news'
 import { getArticleBySlug, getArticlesWithFallback } from '@/lib/airtable'
+import { getSanityArticle, getSanityArticles } from '@/lib/sanity'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -14,7 +15,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const article = (await getArticleBySlug(slug)) || articles.find((a) => a.slug === slug)
+  const article = (await getSanityArticle(slug)) || (await getArticleBySlug(slug)) || articles.find((a) => a.slug === slug)
   if (!article) return {}
   return { title: article.title, description: article.excerpt }
 }
@@ -47,7 +48,8 @@ function renderBody(body: string) {
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params
-  const liveArticles = await getArticlesWithFallback(articles)
+  const cmsArticles = await getSanityArticles()
+  const liveArticles = cmsArticles.length ? cmsArticles : await getArticlesWithFallback(articles)
   const article = liveArticles.find((a) => a.slug === slug)
   if (!article) notFound()
 

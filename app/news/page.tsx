@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { articles } from '@/data/news'
+import { getSanityArticles } from '@/lib/sanity'
 import NewsClient from './NewsClient'
 
 export const metadata: Metadata = {
@@ -7,6 +8,7 @@ export const metadata: Metadata = {
   description: 'Latest and historic news from the Marshall Islands Soccer Federation.',
 }
 
-export default function NewsPage() {
-  return <NewsClient articles={articles} />
+export default async function NewsPage() {
+  const cmsArticles = await getSanityArticles()
+  return <NewsClient articles={cmsArticles.length ? cmsArticles : articles} />
 }
