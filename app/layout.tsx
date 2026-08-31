@@ -19,7 +19,7 @@ const barlowCondensed = Barlow_Condensed({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://marshallislandssoccer.com'),
+  metadataBase: new URL('https://rmi.soccer'),
   title: {
     default: 'Marshall Islands Soccer Federation',
     template: '%s | MISF',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: 'Marshall Islands Soccer Federation',
     description:
       'The Marshall Islands Soccer Federation — building football across the Pacific islands, developing players, competing internationally, and advocating for climate action.',
-    url: 'https://marshallislandssoccer.com',
+    url: 'https://rmi.soccer',
     siteName: 'Marshall Islands Soccer Federation',
     locale: 'en_US',
     type: 'website',

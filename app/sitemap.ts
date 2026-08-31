@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { listAllRecords } from '@/lib/airtable'
 import { getSanityPagePaths } from '@/lib/sanity'
 
-const BASE = 'https://marshallislandssoccer.com'
+const BASE = 'https://rmi.soccer'
 
 const STATIC_PAGES = [
   { url: BASE, priority: 1.0 },
