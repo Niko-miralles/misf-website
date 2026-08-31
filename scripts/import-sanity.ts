@@ -1,4 +1,6 @@
 import { createClient } from '@sanity/client'
+import { createReadStream, existsSync } from 'node:fs'
+import { basename, join } from 'node:path'
 import { articles } from '../data/news'
 import { federationStaff } from '../data/federation-staff'
 import { squad, futsalSquad, womensFutsalSquad, technicalStaff } from '../data/players'
@@ -24,7 +26,18 @@ const blocks = (text?: string) => text?.split(/\n\n+/).filter(Boolean).map((chil
   children: [{ _key: `span-${index + 1}`, _type: 'span', marks: [], text: children }],
 }))
 
+async function uploadImage(imagePath: string | null) {
+  if (!imagePath) return undefined
+  const filePath = join(process.cwd(), 'public', imagePath.replace(/^\//, ''))
+  if (!existsSync(filePath)) return undefined
+  const asset = await client.assets.upload('image', createReadStream(filePath), { filename: basename(filePath) })
+  return { _type: 'image', asset: { _type: 'reference', _ref: asset._id } }
+}
+
 async function run() {
+  const articleImages = new Map(await Promise.all(articles.map(async (article) => [article.slug, await uploadImage(article.image)] as const)))
+  const peopleWithPhotos = [...squad, ...technicalStaff]
+  const peopleImages = new Map(await Promise.all(peopleWithPhotos.map(async (person) => [person.id, await uploadImage(person.photo)] as const)))
   const tx = client.transaction()
 
   tx.createOrReplace({
@@ -43,6 +56,7 @@ async function run() {
       publishedAt: `${article.date}T12:00:00.000Z`,
       excerpt: article.excerpt,
       body: blocks(article.body),
+      image: articleImages.get(article.slug),
     })
   }
 
@@ -66,6 +80,7 @@ async function run() {
         _id: key(group, person.id), _type: 'person', name: person.name, role: 'role' in person ? person.role : undefined,
         team, position: 'position' in person ? person.position : undefined,
         shirtNumber: 'number' in person ? person.number : undefined, order: person.id,
+        image: peopleImages.get(person.id),
       })
     }
   }
