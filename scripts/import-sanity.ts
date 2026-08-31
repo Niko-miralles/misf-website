@@ -1,5 +1,6 @@
 import { createClient } from '@sanity/client'
-import { createReadStream, existsSync } from 'node:fs'
+import { createReadStream } from 'node:fs'
+import { readdir } from 'node:fs/promises'
 import { basename, join } from 'node:path'
 import { articles } from '../data/news'
 import { federationStaff } from '../data/federation-staff'
@@ -26,18 +27,41 @@ const blocks = (text?: string) => text?.split(/\n\n+/).filter(Boolean).map((chil
   children: [{ _key: `span-${index + 1}`, _type: 'span', marks: [], text: children }],
 }))
 
-async function uploadImage(imagePath: string | null) {
-  if (!imagePath) return undefined
-  const filePath = join(process.cwd(), 'public', imagePath.replace(/^\//, ''))
-  if (!existsSync(filePath)) return undefined
-  const asset = await client.assets.upload('image', createReadStream(filePath), { filename: basename(filePath) })
-  return { _type: 'image', asset: { _type: 'reference', _ref: asset._id } }
+async function listImageFiles(directory: string): Promise<string[]> {
+  const entries = await readdir(directory, { withFileTypes: true })
+  const nested = await Promise.all(entries.map(async (entry) => {
+    const filePath = join(directory, entry.name)
+    if (entry.isDirectory()) return listImageFiles(filePath)
+    return /\.(avif|gif|jpe?g|png|webp)$/i.test(entry.name) ? [filePath] : []
+  }))
+  return nested.flat()
+}
+
+async function uploadRemainingAssets() {
+  const imageDirectory = join(process.cwd(), 'public', 'images')
+  const existing = new Set(await client.fetch<string[]>('*[_type == "sanity.imageAsset"].originalFilename'))
+  const limit = Number(process.env.SANITY_IMPORT_LIMIT || 20)
+  const files = (await listImageFiles(imageDirectory)).filter((file) => !existing.has(basename(file))).slice(0, limit)
+  for (const file of files) {
+    // Sanity's public API limits uploads per second. A small delay makes this
+    // migration resumable and avoids losing the remaining assets to a 429.
+    await client.assets.upload('image', createReadStream(file), { filename: basename(file) })
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
+  return files.length
 }
 
 async function run() {
-  const articleImages = new Map(await Promise.all(articles.map(async (article) => [article.slug, await uploadImage(article.image)] as const)))
+  const remainingAssets = await uploadRemainingAssets()
+  const assetIds = new Map(await client.fetch<Array<{ _id: string, originalFilename: string }>>('*[_type == "sanity.imageAsset"]{_id, originalFilename}').then((assets) => assets.map((asset) => [asset.originalFilename, asset._id] as const)))
+  const imageReference = (imagePath: string | null) => {
+    if (!imagePath) return undefined
+    const assetId = assetIds.get(basename(imagePath))
+    return assetId ? { _type: 'image', asset: { _type: 'reference', _ref: assetId } } : undefined
+  }
+  const articleImages = new Map(articles.map((article) => [article.slug, imageReference(article.image)] as const))
   const peopleWithPhotos = [...squad, ...technicalStaff]
-  const peopleImages = new Map(await Promise.all(peopleWithPhotos.map(async (person) => [person.id, await uploadImage(person.photo)] as const)))
+  const peopleImages = new Map(peopleWithPhotos.map((person) => [person.id, imageReference(person.photo)] as const))
   const tx = client.transaction()
 
   tx.createOrReplace({
@@ -86,7 +110,7 @@ async function run() {
   }
 
   await tx.commit()
-  console.log(`Imported ${articles.length} articles and ${federationStaff.length + squad.length + futsalSquad.length + womensFutsalSquad.length + technicalStaff.length} people.`)
+  console.log(`Imported ${articles.length} articles, ${federationStaff.length + squad.length + futsalSquad.length + womensFutsalSquad.length + technicalStaff.length} people, and ${remainingAssets} remaining image assets.`)
 }
 
 run()
