@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import PageHeader from '@/components/ui/PageHeader'
 import { federationStaff, staffDepartments } from '@/data/federation-staff'
+import { getSanityStaff } from '@/lib/sanity'
 
 export const metadata: Metadata = {
   title: 'Federation Team',
@@ -11,7 +12,18 @@ function initials(name: string) {
   return name.split(' ').map((part) => part[0]).join('').slice(0, 2)
 }
 
-export default function FederationTeamPage() {
+export default async function FederationTeamPage() {
+  const cmsStaff = await getSanityStaff()
+  const peopleSource = cmsStaff.length ? cmsStaff : federationStaff
+  const departments = Array.from(new Set(peopleSource.map((person) => person.department).filter((department): department is string => Boolean(department))))
+  const knownDepartments = new Set<string>(staffDepartments)
+  const orderedDepartments: string[] = departments.length
+    ? [
+        ...staffDepartments.filter((department) => departments.includes(department)),
+        ...departments.filter((department) => !knownDepartments.has(department)),
+      ]
+    : [...staffDepartments]
+
   return (
     <div className="min-h-screen bg-white">
       <PageHeader
@@ -31,8 +43,8 @@ export default function FederationTeamPage() {
         </div>
 
         <div className="mt-12 space-y-12">
-          {staffDepartments.map((department) => {
-            const people = federationStaff.filter((person) => person.department === department)
+          {orderedDepartments.map((department) => {
+            const people = peopleSource.filter((person) => person.department === department)
             if (!people.length) return null
 
             return (

@@ -45,3 +45,23 @@ export async function getSanityArticle(slug: string) {
   )
   return article ? toArticle(article) : null
 }
+
+export type CmsStaffMember = {
+  _id: string
+  name: string
+  role?: string
+  department?: string
+  location?: string
+  flag?: string
+  image?: string
+}
+
+export async function getSanityStaff() {
+  return sanityClient.fetch<CmsStaffMember[]>(
+    `*[_type == "person" && team == "Federation staff"] | order(department asc, order asc, name asc) {
+      _id, name, role, department, location, flag, "image": image.asset->url
+    }`,
+    {},
+    { next: { revalidate: 60 } },
+  )
+}

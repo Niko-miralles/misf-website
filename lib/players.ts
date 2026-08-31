@@ -137,6 +137,33 @@ async function airtableFetch(url: string, token: string) {
 }
 
 export async function fetchAllPlayers(): Promise<Player[]> {
+  const cmsPlayers = await sanityClient.fetch<Array<{
+    _id: string
+    name: string
+    role?: string
+    position?: string
+    team?: string
+    shirtNumber?: number
+    image?: string
+  }>>(
+    `*[_type == "person" && defined(team)] | order(order asc, name asc) {
+      _id, name, role, position, team, shirtNumber, "image": image.asset->url
+    }`,
+    {},
+    { next: { revalidate: 60 } },
+  )
+
+  if (cmsPlayers.length > 0) {
+    return cmsPlayers.map((player) => ({
+      id: player._id,
+      name: player.name,
+      position: player.position || player.role || 'Squad',
+      photo: player.image || null,
+      team: player.team,
+      number: player.shirtNumber,
+    }))
+  }
+
   const base = process.env.AIRTABLE_BASE_ID
   const table = process.env.AIRTABLE_PLAYERS_TABLE_ID || process.env.AIRTABLE_PLAYERS_TABLE || 'Players'
   const token = process.env.AIRTABLE_TOKEN
@@ -181,3 +208,4 @@ export async function fetchPlayers(team?: string): Promise<Player[]> {
   if (!team) return players
   return players.filter((player) => teamMatches(player.team || '', team))
 }
+import { sanityClient } from '@/lib/sanity'
