@@ -1,4 +1,5 @@
 import { defineConfig, defineField, defineType } from 'sanity'
+import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'az62wb6s'
@@ -15,7 +16,9 @@ export default defineConfig({
   projectId,
   dataset,
   basePath: '/studio',
-  plugins: [visionTool()],
+  // Content is the editor used day-to-day. Vision is kept as a separate,
+  // optional developer tool for inspecting data.
+  plugins: [structureTool(), visionTool()],
   schema: {
     types: [
       defineType({
