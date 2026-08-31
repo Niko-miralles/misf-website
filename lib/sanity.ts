@@ -1,5 +1,5 @@
 import { createClient } from 'next-sanity'
-import type { Article } from '@/data/news'
+import { articles, type Article } from '@/data/news'
 
 export const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'az62wb6s',
@@ -23,12 +23,16 @@ type SanityArticle = Omit<Article, 'featured' | 'imageGradient' | 'body'> & {
 }
 
 function toArticle(article: SanityArticle): Article {
+  const fallback = articles.find((localArticle) => localArticle.slug === article.slug)
+
   return {
     ...article,
     date: article.date?.slice(0, 10) || new Date().toISOString().slice(0, 10),
     category: article.category || 'Federation',
+    image: article.image || fallback?.image || null,
+    imageGradient: fallback?.imageGradient,
     featured: false,
-    body: article.body?.map((block) => block.children?.map((child) => child.text || '').join('') || '').join('\n\n'),
+    body: article.body?.map((block) => block.children?.map((child) => child.text || '').join('') || '').join('\n\n') || fallback?.body,
   }
 }
 
