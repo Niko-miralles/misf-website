@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import type { CmsContentBlock } from '@/lib/sanity'
 
 interface PageHeaderProps {
   eyebrow?: string
@@ -26,7 +27,7 @@ export default function PageHeader({
   const [cmsPage, setCmsPage] = useState<{
     heroTitle?: string
     heroImage?: string
-    content?: string
+    content?: CmsContentBlock[]
   } | null>(null)
 
   useEffect(() => {
@@ -40,7 +41,12 @@ export default function PageHeader({
 
   const displayTitle = cmsPage?.heroTitle || title
   const displayImage = cmsPage?.heroImage || image
-  const displaySubtitle = cmsPage?.content || subtitle
+  const displaySubtitle = cmsPage?.content
+    ?.filter((block) => block._type === 'block')
+    .flatMap((block) => block.children || [])
+    .map((span) => span.text || '')
+    .join(' ')
+    || subtitle
 
   return (
     <div

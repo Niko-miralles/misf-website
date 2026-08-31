@@ -28,7 +28,13 @@ export default defineConfig({
           defineField({ name: 'slug', title: 'URL path', type: 'slug', options: { source: 'title', maxLength: 96 }, validation: (rule) => rule.required() }),
           defineField({ name: 'heroTitle', title: 'Hero heading', type: 'string' }),
           defineField({ name: 'heroImage', title: 'Hero image', type: 'image', options: { hotspot: true } }),
-          defineField({ name: 'content', title: 'Page content', type: 'array', of: [{ type: 'block' }, { type: 'image', options: { hotspot: true } }] }),
+          defineField({
+            name: 'content', title: 'Page content', type: 'array',
+            of: [
+              { type: 'block', marks: { annotations: [{ name: 'link', type: 'object', fields: [defineField({ name: 'href', title: 'Link URL', description: 'Use /path for an internal page, or a full https:// URL for an external link.', type: 'string', validation: (rule) => rule.required() })] }] } },
+              { type: 'image', options: { hotspot: true }, fields: [defineField({ name: 'alt', title: 'Image description', type: 'string', validation: (rule) => rule.required() })] },
+            ],
+          }),
           defineField({ name: 'seo', title: 'SEO', type: 'object', fields: seoFields }),
         ],
       }),

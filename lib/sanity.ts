@@ -48,13 +48,31 @@ export async function getSanityArticle(slug: string) {
 
 export type CmsPage = {
   title?: string
+  slug?: string
   heroTitle?: string
   heroImage?: string
-  content?: string
+  content?: CmsContentBlock[]
   seo?: {
     metaTitle?: string
     metaDescription?: string
   }
+}
+
+export type CmsSpan = {
+  _key?: string
+  _type?: 'span'
+  text?: string
+  marks?: string[]
+}
+
+export type CmsContentBlock = {
+  _key?: string
+  _type?: 'block' | 'image'
+  style?: 'normal' | 'h2' | 'h3' | 'blockquote'
+  children?: CmsSpan[]
+  markDefs?: Array<{ _key?: string; _type?: 'link'; href?: string }>
+  url?: string
+  alt?: string
 }
 
 export async function getSanityPage(path: string) {
@@ -62,12 +80,24 @@ export async function getSanityPage(path: string) {
   return sanityClient.fetch<CmsPage | null>(
     `*[_type == "page" && slug.current == $slug][0] {
       title,
+      "slug": slug.current,
       heroTitle,
       "heroImage": heroImage.asset->url,
-      "content": pt::text(content),
+      content[]{
+        ...,
+        _type == "image" => { "url": asset->url, alt },
+      },
       seo
     }`,
     { slug },
+    { next: { revalidate: 60 } },
+  )
+}
+
+export async function getSanityPagePaths() {
+  return sanityClient.fetch<Array<{ slug?: string }>>(
+    `*[_type == "page" && defined(slug.current)]{ "slug": slug.current }`,
+    {},
     { next: { revalidate: 60 } },
   )
 }
