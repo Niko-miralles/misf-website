@@ -1,5 +1,6 @@
 import { createClient } from 'next-sanity'
 import { articles, type Article } from '@/data/news'
+import { shopProducts, type ShopProduct } from '@/data/products'
 
 export const sanityClient = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'az62wb6s',
@@ -48,6 +49,26 @@ export async function getSanityArticle(slug: string) {
     { next: { revalidate: 60 } },
   )
   return article ? toArticle(article) : null
+}
+
+type SanityProduct = Partial<ShopProduct> & { slug?: string; name?: string }
+
+export async function getProductsWithFallback(): Promise<ShopProduct[]> {
+  const cmsProducts = await sanityClient.fetch<SanityProduct[]>(
+    `*[_type == "product" && (!defined(visible) || visible != false)] | order(order asc, name asc) {
+      "slug": slug.current, name, subtitle, price, category, badge,
+      "imageA": image.asset->url, "imageB": hoverImage.asset->url,
+      href, featured, order
+    }`,
+    {},
+    { next: { revalidate: 60 } },
+  )
+
+  const validProducts = cmsProducts.filter((product): product is ShopProduct => Boolean(product.slug && product.name && product.imageA && product.href && product.category))
+  const cmsBySlug = new Map(validProducts.map((product) => [product.slug, product]))
+  const existing = shopProducts.map((product) => ({ ...product, ...cmsBySlug.get(product.slug) }))
+  const newProducts = validProducts.filter((product) => !shopProducts.some((fallback) => fallback.slug === product.slug))
+  return [...existing, ...newProducts].sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
 }
 
 export type CmsPage = {

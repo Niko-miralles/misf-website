@@ -3,6 +3,7 @@ import { createReadStream } from 'node:fs'
 import { readdir } from 'node:fs/promises'
 import { basename, join, relative } from 'node:path'
 import { articles } from '../data/news'
+import { shopProducts } from '../data/products'
 import { federationStaff } from '../data/federation-staff'
 import { squad, futsalSquad, womensFutsalSquad, technicalStaff } from '../data/players'
 
@@ -111,6 +112,25 @@ async function run() {
       excerpt: article.excerpt,
       body: blocks(article.body),
       image: articleImages.get(article.slug),
+    })
+  }
+
+  for (const product of shopProducts) {
+    tx.createOrReplace({
+      _id: `product-${product.slug}`,
+      _type: 'product',
+      name: product.name,
+      slug: { _type: 'slug', current: product.slug },
+      subtitle: product.subtitle,
+      price: product.price,
+      category: product.category,
+      badge: product.badge,
+      image: imageReference(product.imageA),
+      hoverImage: imageReference(product.imageB || null),
+      href: product.href,
+      featured: product.featured || false,
+      order: product.order,
+      visible: true,
     })
   }
 

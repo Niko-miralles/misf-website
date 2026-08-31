@@ -52,6 +52,23 @@ export default defineConfig({
         ],
       }),
       defineType({
+        name: 'product', title: 'Products', type: 'document',
+        fields: [
+          defineField({ name: 'name', title: 'Product name', type: 'string', validation: (rule) => rule.required() }),
+          defineField({ name: 'slug', type: 'slug', options: { source: 'name' }, validation: (rule) => rule.required() }),
+          defineField({ name: 'subtitle', title: 'Short description', type: 'string' }),
+          defineField({ name: 'price', title: 'Display price', type: 'string' }),
+          defineField({ name: 'category', type: 'string', options: { list: ['jerseys', 'accessories'] }, validation: (rule) => rule.required() }),
+          defineField({ name: 'badge', title: 'Badge (optional)', type: 'string' }),
+          defineField({ name: 'image', title: 'Main image', type: 'image', options: { hotspot: true }, validation: (rule) => rule.required() }),
+          defineField({ name: 'hoverImage', title: 'Hover image (optional)', type: 'image', options: { hotspot: true } }),
+          defineField({ name: 'href', title: 'Shopify product URL', type: 'url', validation: (rule) => rule.required() }),
+          defineField({ name: 'featured', title: 'Show on homepage', type: 'boolean', initialValue: false }),
+          defineField({ name: 'order', title: 'Display order', type: 'number' }),
+          defineField({ name: 'visible', title: 'Visible on website', type: 'boolean', initialValue: true }),
+        ],
+      }),
+      defineType({
         name: 'person', title: 'People (staff and players)', type: 'document',
         fields: [
           defineField({ name: 'name', type: 'string', validation: (rule) => rule.required() }),

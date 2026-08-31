@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import type { ShopProduct } from '@/data/products'
 
 type Category = 'all' | 'jerseys' | 'accessories'
 
 const FAQS: { question: string; answer: string }[] = []
 
-const PRODUCTS = [
+const LEGACY_PRODUCTS = [
   {
     name: '1st Ever Home Jersey',
     subtitle: "Men's · by PlayerLayer",
@@ -101,9 +102,10 @@ const FILTERS: { label: string; value: Category }[] = [
   { label: 'Accessories', value: 'accessories' },
 ]
 
-export default function ShopClient() {
+export default function ShopClient({ products: managedProducts }: { products?: ShopProduct[] }) {
   const [filter, setFilter] = useState<Category>('all')
-  const products = filter === 'all' ? PRODUCTS : PRODUCTS.filter((product) => product.category === filter)
+  const sourceProducts = managedProducts || LEGACY_PRODUCTS
+  const products = filter === 'all' ? sourceProducts : sourceProducts.filter((product) => product.category === filter)
 
   return (
     <div className="bg-white min-h-screen">
@@ -166,7 +168,7 @@ export default function ShopClient() {
           <div className="grid [grid-template-columns:repeat(auto-fill,minmax(260px,1fr))] gap-4">
             {products.map((product) => (
               <article
-                key={`${product.name}-${product.subtitle}`}
+                key={'slug' in product ? product.slug : `${product.name}-${product.subtitle}`}
                 className="group block overflow-hidden bg-[#F4F6FB] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(14,45,122,0.12)]"
               >
                 <a
@@ -181,15 +183,10 @@ export default function ShopClient() {
                     loading="lazy"
                     className="absolute inset-0 h-full w-full object-cover transition-all duration-500 group-hover:scale-105 group-hover:opacity-0"
                   />
-                  <img
-                    src={product.imageB}
-                    alt={product.name}
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
-                  />
+                  {product.imageB && <img src={product.imageB} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-0 transition-all duration-500 group-hover:scale-[1.02] group-hover:opacity-100" />}
                   {'badge' in product && product.badge && (
                     <span
-                      className={`absolute left-3 top-3 z-10 font-display font-black text-[10px] uppercase tracking-widest px-2.5 py-1 ${product.badgeClass}`}
+                      className={`absolute left-3 top-3 z-10 px-2.5 py-1 font-display text-[10px] font-black uppercase tracking-widest ${'badgeClass' in product ? product.badgeClass : 'bg-misf-gold text-white'}`}
                     >
                       {product.badge}
                     </span>
