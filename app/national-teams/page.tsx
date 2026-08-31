@@ -215,7 +215,7 @@ export default function NationalTeamsPage() {
           </div>
         </section>
 
-        <section className="mt-16 border border-gray-200 p-8 sm:p-10 text-center">
+        <section id="legacy-numbers" className="mt-16 border border-gray-200 p-8 sm:p-10 text-center">
           <p className="font-display font-black text-xs uppercase tracking-[0.25em] text-misf-gold mb-2">
             Legacy Numbers
           </p>
