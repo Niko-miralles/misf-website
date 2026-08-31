@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { articles } from '@/data/news'
 import { getArticlesWithFallback } from '@/lib/airtable'
+import { getSanityArticles } from '@/lib/sanity'
 
 function CategoryLabel({ category }: { category: string }) {
   return (
@@ -26,7 +27,8 @@ function CardImage({ image, gradient, title }: { image: string | null; gradient?
 }
 
 export default async function NewsGrid() {
-  const liveArticles = await getArticlesWithFallback(articles)
+  const cmsArticles = await getSanityArticles()
+  const liveArticles = cmsArticles.length ? cmsArticles : await getArticlesWithFallback(articles)
   const [featured1, featured2, ...rest] = liveArticles
   const small = rest.slice(0, 4)
 

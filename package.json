@@ -7,7 +7,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "sanity:import": "tsx scripts/import-sanity.ts"
+    "sanity:import": "tsx scripts/import-sanity.ts",
+    "sanity:seed-products": "tsx scripts/seed-shop-products.ts"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
