@@ -34,36 +34,36 @@ const links = [
 
 export default function LinktreePage() {
   return (
-    <div className="min-h-screen bg-misf-blue-dark px-5 py-10 sm:px-8 sm:py-14">
+    <div className="min-h-[100svh] bg-misf-blue-dark px-5 py-5 sm:px-8 sm:py-10">
       <div className="mx-auto flex w-full max-w-xl flex-col items-center">
-        <Link href="/" className="mb-5 rounded-full focus:outline-none focus:ring-4 focus:ring-misf-gold/50">
-          <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-white bg-white shadow-lg">
+        <Link href="/" className="mb-3 rounded-full focus:outline-none focus:ring-4 focus:ring-misf-gold/50 sm:mb-5">
+          <div className="relative h-16 w-16 overflow-hidden rounded-full border-[3px] border-white bg-white shadow-lg sm:h-24 sm:w-24 sm:border-4">
             <Image
               src="/images/logo.webp"
               alt="Marshall Islands Soccer Federation"
               fill
-              sizes="96px"
+              sizes="(min-width: 640px) 96px, 64px"
               className="object-contain p-1"
               priority
             />
           </div>
         </Link>
 
-        <h1 className="text-center font-display text-3xl font-black uppercase tracking-wide text-white sm:text-4xl">
+        <h1 className="text-center font-display text-2xl font-black uppercase tracking-wide text-white sm:text-4xl">
           Marshall Islands Soccer Federation
         </h1>
-        <p className="mt-2 text-center text-sm font-medium text-white/75">
+        <p className="mt-1 text-center text-xs font-medium text-white/75 sm:mt-2 sm:text-sm">
           Building football across the Pacific islands.
         </p>
 
-        <nav aria-label="Key links" className="mt-9 w-full space-y-3">
+        <nav aria-label="Key links" className="mt-5 w-full space-y-2 sm:mt-9 sm:space-y-3">
           {links.map(({ label, href, icon: Icon, external }) => {
             const className =
-              'group flex w-full items-center gap-4 rounded-xl bg-white px-5 py-4 text-left shadow-lg transition duration-200 hover:-translate-y-0.5 hover:bg-misf-gold focus:outline-none focus:ring-4 focus:ring-misf-gold/50'
+              'group flex min-h-11 w-full items-center gap-3 rounded-xl bg-white px-4 py-2.5 text-left shadow-lg transition duration-200 hover:-translate-y-0.5 hover:bg-misf-gold focus:outline-none focus:ring-4 focus:ring-misf-gold/50 sm:gap-4 sm:px-5 sm:py-4'
             const contents = (
               <>
-                <Icon aria-hidden="true" size={22} strokeWidth={2.5} className="shrink-0 text-misf-blue" />
-                <span className="flex-1 font-display text-lg font-black uppercase leading-tight tracking-wide text-misf-blue-dark sm:text-xl">
+                <Icon aria-hidden="true" size={19} strokeWidth={2.5} className="shrink-0 text-misf-blue sm:h-[22px] sm:w-[22px]" />
+                <span className="flex-1 font-display text-base font-black uppercase leading-[1.05] tracking-wide text-misf-blue-dark sm:text-xl">
                   {label}
                 </span>
                 <span aria-hidden="true" className="text-xl font-bold text-misf-blue-dark transition-transform group-hover:translate-x-1">
@@ -84,7 +84,7 @@ export default function LinktreePage() {
           })}
         </nav>
 
-        <Link href="/" className="mt-10 text-xs font-bold uppercase tracking-widest text-white/65 transition hover:text-white">
+        <Link href="/" className="mt-5 text-[10px] font-bold uppercase tracking-widest text-white/65 transition hover:text-white sm:mt-10 sm:text-xs">
           rmi.soccer
         </Link>
       </div>
