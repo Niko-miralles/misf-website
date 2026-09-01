@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: '#0E2D7A',
   colorScheme: 'dark',
-  viewportFit: 'cover',
 }
 
 const links = [
@@ -40,7 +39,7 @@ const links = [
 
 export default function LinktreePage() {
   return (
-    <div className="min-h-[100dvh] bg-misf-blue-dark px-5 pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:px-8 sm:py-10">
+    <div className="min-h-[100dvh] bg-misf-blue-dark px-5 py-5 sm:px-8 sm:py-10">
       <div className="mx-auto flex w-full max-w-xl flex-col items-center">
         <Link href="/" className="mb-3 rounded-full focus:outline-none focus:ring-4 focus:ring-misf-gold/50 sm:mb-5">
           <div className="relative h-16 w-16 overflow-hidden rounded-full border-[3px] border-white bg-white shadow-lg sm:h-24 sm:w-24 sm:border-4">
