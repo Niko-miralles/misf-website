@@ -11,7 +11,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   // The CMS is an application within the site, not a public page. Giving it a
   // clean canvas prevents the public navigation from obscuring Studio controls.
-  if (pathname.startsWith('/studio')) {
+  if (pathname.startsWith('/studio') || pathname === '/linktree') {
     return <main className="min-h-screen bg-white">{children}</main>
   }
 
