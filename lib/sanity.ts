@@ -1,3 +1,5 @@
+import { mergeFormaNews, mergeFormaProducts } from './forma-collections'
+import { getArticlesWithFallback as formaFallbackArticles } from './airtable'
 import { createClient } from 'next-sanity'
 import { articles, type Article } from '@/data/news'
 import { shopProducts, type ShopProduct } from '@/data/products'
@@ -37,12 +39,12 @@ function toArticle(article: SanityArticle): Article {
   }
 }
 
-export async function getSanityArticles() {
+export async function formaBaseArticles() {
   const articles = await sanityClient.fetch<SanityArticle[]>(articlesQuery, {}, { next: { revalidate: 60 } })
   return articles.map(toArticle)
 }
 
-export async function getSanityArticle(slug: string) {
+export async function formaBaseArticle(slug: string) {
   const article = await sanityClient.fetch<SanityArticle | null>(
     `*[_type == "article" && slug.current == $slug][0] { title, "slug": slug.current, category, "date": publishedAt, excerpt, "image": image.asset->url, body }`,
     { slug },
@@ -53,7 +55,7 @@ export async function getSanityArticle(slug: string) {
 
 type SanityProduct = Partial<ShopProduct> & { slug?: string; name?: string }
 
-export async function getProductsWithFallback(): Promise<ShopProduct[]> {
+export async function formaBaseProducts(): Promise<ShopProduct[]> {
   const cmsProducts = await sanityClient.fetch<SanityProduct[]>(
     `*[_type == "product" && (!defined(visible) || visible != false)] | order(order asc, name asc) {
       "slug": slug.current, name, subtitle, price, category, badge,
@@ -145,4 +147,16 @@ export async function getSanityStaff() {
     {},
     { next: { revalidate: 60 } },
   )
+}
+
+// Forma collections adapter v1
+export async function getSanityArticles() {
+  const existing = await formaBaseArticles().catch(() => [])
+  return mergeFormaNews(existing.length ? existing : await formaFallbackArticles(articles))
+}
+export async function getSanityArticle(slug: string) {
+  return (await getSanityArticles()).find(article => article.slug === slug) || null
+}
+export async function getProductsWithFallback(): Promise<ShopProduct[]> {
+  return mergeFormaProducts(await formaBaseProducts().catch(() => shopProducts))
 }
