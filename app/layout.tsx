@@ -72,7 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GoogleAnalytics />
         <AppShell>{children}</AppShell>
       
-<FormaConnectorScript id="forma-connector" data-forma-connector="1" src="/forma/visual-cms.js" strategy="afterInteractive" data-editor="https://forma-cms-visual.vercel.app" data-content="/forma/content.json" />
+<FormaConnectorScript id="forma-connector" data-forma-connector="1" src="https://forma-cms-visual.vercel.app/visual-cms.js" strategy="afterInteractive" data-editor="https://forma-cms-visual.vercel.app" data-content="/forma/content.json" data-live="https://forma-cms-visual.vercel.app/api/content?site=J0eIWFMME36VTVhl0Yow1Unh2Dvi22X_PVd2lpmA1Gg" />
 </body>
     </html>
   )

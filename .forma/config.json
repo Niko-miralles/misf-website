@@ -7,5 +7,6 @@
   "publicDir": "public",
   "siteUrl": "https://misf-website-psi.vercel.app/",
   "editorOrigin": "https://forma-cms-visual.vercel.app",
-  "contentPath": "public/forma/content.json"
+  "contentPath": "public/forma/content.json",
+  "liveSiteId": "J0eIWFMME36VTVhl0Yow1Unh2Dvi22X_PVd2lpmA1Gg"
 }
