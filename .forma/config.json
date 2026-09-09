@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "repository": "Niko-miralles/misf-website",
+  "root": "",
+  "framework": "Next.js · App Router",
+  "entry": "app/layout.tsx",
+  "publicDir": "public",
+  "siteUrl": "https://misf-website-psi.vercel.app/",
+  "editorOrigin": "https://forma-cms-visual.vercel.app",
+  "contentPath": "public/forma/content.json"
+}

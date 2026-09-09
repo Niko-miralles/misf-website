@@ -3,6 +3,8 @@ import { Inter, Barlow_Condensed } from 'next/font/google'
 import './globals.css'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import AppShell from '@/components/layout/AppShell'
+import FormaConnectorScript from "next/script";
+
 
 const inter = Inter({
   subsets: ['latin'],
@@ -69,7 +71,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen flex flex-col">
         <GoogleAnalytics />
         <AppShell>{children}</AppShell>
-      </body>
+      
+<FormaConnectorScript id="forma-connector" data-forma-connector="1" src="/forma/visual-cms.js" strategy="afterInteractive" data-editor="https://forma-cms-visual.vercel.app" data-content="/forma/content.json" />
+</body>
     </html>
   )
 }
