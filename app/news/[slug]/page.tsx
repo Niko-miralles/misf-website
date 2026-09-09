@@ -15,7 +15,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const article = (await getSanityArticle(slug)) || (await getArticleBySlug(slug)) || articles.find((a) => a.slug === slug)
+  const article = (await getSanityArticle(slug))
   if (!article) return {}
   return { title: article.title, description: article.excerpt }
 }
@@ -49,7 +49,7 @@ function renderBody(body: string) {
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params
   const cmsArticles = await getSanityArticles()
-  const liveArticles = cmsArticles.length ? cmsArticles : await getArticlesWithFallback(articles)
+  const liveArticles = cmsArticles
   const article = liveArticles.find((a) => a.slug === slug)
   if (!article) notFound()
 

@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 
 export default async function NewsPage() {
   const cmsArticles = await getSanityArticles()
-  return <NewsClient articles={cmsArticles.length ? cmsArticles : articles} />
+  return <NewsClient articles={cmsArticles} />
 }

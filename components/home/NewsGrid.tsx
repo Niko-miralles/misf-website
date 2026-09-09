@@ -28,7 +28,7 @@ function CardImage({ image, gradient, title }: { image: string | null; gradient?
 
 export default async function NewsGrid() {
   const cmsArticles = await getSanityArticles()
-  const liveArticles = cmsArticles.length ? cmsArticles : await getArticlesWithFallback(articles)
+  const liveArticles = cmsArticles
   const [featured1, featured2, ...rest] = liveArticles
   const small = rest.slice(0, 4)
 
