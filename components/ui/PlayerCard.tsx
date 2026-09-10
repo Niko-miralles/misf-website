@@ -11,8 +11,8 @@ export default function PlayerCard({ player }: { player: Player }) {
           className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
         />
       ) : (
-        <div className="absolute inset-x-0 top-0 bottom-20 overflow-hidden bg-gradient-to-b from-misf-blue/60 to-misf-blue-dark flex items-end justify-center px-6">
-          <svg viewBox="0 0 100 120" preserveAspectRatio="xMidYMax meet" data-cms-name="Player portrait" className="block w-full h-full max-w-full max-h-full opacity-10 fill-white">
+        <div className="absolute inset-0 bg-gradient-to-b from-misf-blue/60 to-misf-blue-dark flex items-end justify-center pb-8">
+          <svg viewBox="0 0 100 120" data-cms-name="Player portrait" className="w-3/5 opacity-10 fill-white">
             <ellipse cx="50" cy="30" rx="22" ry="24" />
             <path d="M8 120 Q8 70 50 65 Q92 70 92 120Z" />
           </svg>
