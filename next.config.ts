@@ -73,7 +73,7 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           // Allow the private Forma editor; all other external frames remain blocked.
-          { key: 'Content-Security-Policy', value: "frame-ancestors 'self' https://forma-cms-visual.vercel.app" },
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'self' https://forma-cms-visual.vercel.app https://formacms.app" },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         ],
       },
