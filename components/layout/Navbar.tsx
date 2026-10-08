@@ -88,15 +88,6 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2 shrink-0">
-            {/* Mobile Shop link */}
-            <Link
-              href="/shop"
-              aria-label="Shop"
-              className="lg:hidden bg-white text-misf-blue-dark p-2 hover:bg-misf-gold transition-colors"
-            >
-              <ShoppingBag size={20} strokeWidth={2.5} />
-            </Link>
-
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0">
               <div className="relative w-11 h-11">
@@ -111,6 +102,15 @@ export default function Navbar() {
               <span className="hidden sm:block font-display font-bold text-white text-sm uppercase tracking-wider leading-tight">
                 Marshall Islands<br />Soccer Federation
               </span>
+            </Link>
+
+            {/* Mobile Shop link */}
+            <Link
+              href="/shop"
+              aria-label="Shop"
+              className="lg:hidden bg-white text-misf-blue-dark rounded-full p-2 hover:bg-misf-gold transition-colors"
+            >
+              <ShoppingBag size={20} strokeWidth={2.5} />
             </Link>
             </div>
 
