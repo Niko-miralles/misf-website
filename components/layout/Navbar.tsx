@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, ShoppingBag } from 'lucide-react'
 import clsx from 'clsx'
 
 const NAV_ITEMS = [
@@ -87,6 +87,16 @@ export default function Navbar() {
       <nav className="bg-misf-blue">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-2 shrink-0">
+            {/* Mobile Shop link */}
+            <Link
+              href="/shop"
+              aria-label="Shop"
+              className="lg:hidden bg-white text-misf-blue-dark p-2 hover:bg-misf-gold transition-colors"
+            >
+              <ShoppingBag size={20} strokeWidth={2.5} />
+            </Link>
+
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 shrink-0">
               <div className="relative w-11 h-11">
@@ -102,6 +112,7 @@ export default function Navbar() {
                 Marshall Islands<br />Soccer Federation
               </span>
             </Link>
+            </div>
 
             {/* Desktop nav */}
             <div className="hidden lg:flex items-center gap-1">
