@@ -108,9 +108,10 @@ export default function Navbar() {
             <Link
               href="/shop"
               aria-label="Shop"
-              className="lg:hidden bg-white text-misf-blue-dark rounded-full p-2 hover:bg-misf-gold transition-colors"
+              className="lg:hidden flex items-center gap-1.5 bg-white text-misf-blue-dark font-display font-black text-xs uppercase tracking-widest rounded-full px-3.5 py-2 hover:bg-misf-gold transition-colors"
             >
-              <ShoppingBag size={20} strokeWidth={2.5} />
+              <ShoppingBag size={16} strokeWidth={2.5} />
+              Shop
             </Link>
             </div>
 
