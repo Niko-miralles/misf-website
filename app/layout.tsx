@@ -47,8 +47,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: '/images/og-default.jpg',
-        width: 1130,
-        height: 743,
+        width: 1024,
+        height: 685,
         alt: 'Marshall Islands Soccer Federation players in action',
       },
     ],
