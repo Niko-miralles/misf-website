@@ -168,6 +168,14 @@ export default function Navbar() {
               </Link>
             </div>
 
+            {/* Mobile Shop link */}
+            <Link
+              href="/shop"
+              className="lg:hidden bg-white text-misf-blue-dark font-display font-black text-sm uppercase tracking-widest px-5 py-2 hover:bg-misf-gold transition-colors"
+            >
+              Shop
+            </Link>
+
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
