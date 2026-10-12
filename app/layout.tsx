@@ -72,7 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GoogleAnalytics />
         <AppShell>{children}</AppShell>
       
-<FormaConnectorScript id="forma-connector" data-forma-connector="1" src="https://formacms.app/visual-cms.js" strategy="afterInteractive" data-editor="https://formacms.app" data-content="/forma/content.json" data-live="https://formacms.app/api/content?site=N8e0qEX3p4AI_9pUJVSg4dhlJ0s9c-dn5MCtmeANoKs" />
+<FormaConnectorScript id="forma-connector" data-forma-connector="1" src="https://formacms.app/visual-cms.js" strategy="afterInteractive" data-editor="https://formacms.app" data-content="/forma/content.json" data-live="https://formacms.app/api/content?site=d0qw1q8JY4YTvmY1az4CyZ1cyiEH1FfyvzzUap-wGs4" />
 </body>
     </html>
   )
