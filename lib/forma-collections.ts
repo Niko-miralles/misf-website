@@ -4,7 +4,7 @@ import type { Article } from '@/data/news'
 import type { ShopProduct } from '@/data/products'
 const load = cache(async (): Promise<{news: Article[]; products: ShopProduct[]; deleted?: {news?:string[]; products?:string[]}}> => {
   try {
-    const response = await fetch("https://forma-cms-visual.vercel.app/api/collections?action=public&site=J0eIWFMME36VTVhl0Yow1Unh2Dvi22X_PVd2lpmA1Gg", {cache:'no-store', signal:AbortSignal.timeout(5000)})
+    const response = await fetch("https://formacms.app/api/collections?action=public&site=N8e0qEX3p4AI_9pUJVSg4dhlJ0s9c-dn5MCtmeANoKs", {cache:'no-store', signal:AbortSignal.timeout(5000)})
     if (!response.ok) throw new Error('Content unavailable')
     const data = await response.json()
     return {deleted: data.deleted, news: Array.isArray(data.news) ? data.news : [], products: Array.isArray(data.products) ? data.products : []}
