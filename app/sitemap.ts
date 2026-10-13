@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { listAllRecords } from '@/lib/airtable'
-import { getSanityPagePaths } from '@/lib/sanity'
+import { getSanityArticles, getSanityPagePaths } from '@/lib/sanity'
 
 const BASE = 'https://rmi.soccer'
 
@@ -34,14 +33,12 @@ const STATIC_PAGES = [
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [records, cmsPages] = await Promise.all([listAllRecords(), getSanityPagePaths()])
-  const articleUrls = records
-    .filter((r) => r.fields.Title && r.fields.Visiblity !== 'Private')
-    .map((r) => ({
-      url: `${BASE}/news/${r.id}`,
-      lastModified: new Date(r.createdTime || Date.now()),
-      priority: 0.8,
-    }))
+  const [articles, cmsPages] = await Promise.all([getSanityArticles(), getSanityPagePaths()])
+  const articleUrls = articles.map((article) => ({
+    url: `${BASE}/news/${article.slug}`,
+    lastModified: new Date(article.date || Date.now()),
+    priority: 0.8,
+  }))
 
   return [
     ...STATIC_PAGES.map((p) => ({ ...p, lastModified: new Date(), changeFrequency: 'weekly' as const })),

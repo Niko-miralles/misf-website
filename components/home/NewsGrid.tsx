@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { articles } from '@/data/news'
-import { getArticlesWithFallback } from '@/lib/airtable'
 import { getSanityArticles } from '@/lib/sanity'
 
 function CategoryLabel({ category }: { category: string }) {

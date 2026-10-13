@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { articles } from '@/data/news'
-import { getArticleBySlug, getArticlesWithFallback } from '@/lib/airtable'
 import { getSanityArticle, getSanityArticles } from '@/lib/sanity'
 
 interface Props {

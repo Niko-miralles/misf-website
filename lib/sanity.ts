@@ -1,5 +1,4 @@
 import { mergeFormaNews, mergeFormaProducts } from './forma-collections'
-import { getArticlesWithFallback as formaFallbackArticles } from './airtable'
 import { createClient } from 'next-sanity'
 import { articles, type Article } from '@/data/news'
 import { shopProducts, type ShopProduct } from '@/data/products'
@@ -152,7 +151,7 @@ export async function getSanityStaff() {
 // Forma collections adapter v1
 export async function getSanityArticles() {
   const existing = await formaBaseArticles().catch(() => [])
-  return mergeFormaNews(existing.length ? existing : await formaFallbackArticles(articles))
+  return mergeFormaNews(existing.length ? existing : articles)
 }
 export async function getSanityArticle(slug: string) {
   return (await getSanityArticles()).find(article => article.slug === slug) || null
